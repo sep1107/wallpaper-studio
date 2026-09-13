@@ -7,6 +7,7 @@
 ## 功能
 
 - 上传或拖入 JPG、PNG、WebP，也可直接使用内置的原创山景背景。
+- 上传后自动提取主色，匹配分区底色、边框和文字颜色；仍可手动调整。新增分区和切换布局沿用当前壁纸配色。
 - 两、三、四分区预设，自由添加、复制和删除分区。
 - 拖动分区移动，拖右下角调整大小。
 - 修改标题、底色、文字颜色、透明度、圆角、字体和字号。
@@ -44,6 +45,7 @@ python3 -m http.server 8766 --bind 127.0.0.1 --directory site
 ## 限制
 
 - 当前设计只保留在页面内存中，刷新或关闭页面会丢失。
+- 换壁纸会重新匹配所有分区的颜色，保留标题、位置、字号、字体、透明度和圆角。复杂或明暗混合的背景可手动微调文字颜色与透明度。
 - 最多 20 个分区；图片最大 40 MB、3200 万像素，最长边 8192 像素。
 - 小图片仍按原尺寸导出，不会自动提高清晰度。
 - 字号和圆角按 1920 像素宽度基准缩放；标题超出分区宽度会裁切，可减小字号或加宽分区。
@@ -57,6 +59,7 @@ site/
   index.html       页面
   style.css        样式
   app.js           Canvas 编辑与 PNG 导出
+  palette.js       本地壁纸主色提取与默认配色
   fonts/           字体与各自的 OFL 许可
 tests/browser.cjs  浏览器验收脚本
 FONT-SOURCES.md    字体来源与 SHA-256
@@ -72,6 +75,8 @@ npm install --no-save --package-lock=false playwright
 npx playwright install chromium
 node tests/browser.cjs
 ```
+
+配色测试无需额外依赖：`node --test tests/palette.test.cjs`，覆盖浅色、深色、冷暖主色和透明像素。
 
 可通过 `TEST_URL` 指定地址、`PLAYWRIGHT_MODULE` 指定已有的 Playwright 包路径。验收脚本覆盖字体、增删复制、拖动缩放、上传、PNG 尺寸与背景像素、空状态、窄屏布局和运行时错误。
 
